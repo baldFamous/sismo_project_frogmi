@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from 'react';
+import FeatureCard from './FeatureCard';
+import Pagination from '../Pagination';
+import { getFeatures, sendComment, getComments } from '../services/api';
 
 function FeatureList() {
   const [features, setFeatures] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/features')  // Asegúrate de usar la URL correcta de tu API
-      .then(response => response.json())
-      .then(data => setFeatures(data.data))
-      .catch(error => console.error('Error:', error));
-  }, []);
+    // Llamada a la API para obtener features
+    getFeatures(currentPage).then(data => setFeatures(data));
+    }, [currentPage]);
 
   return (
     <div>
-      <h2>Feature List</h2>
-      <ul>
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {features.map(feature => (
-          <li key={feature.id}>{feature.attributes.title}</li>
+          <FeatureCard key={feature.id} feature={feature} />
         ))}
-      </ul>
+      </div>
+      <Pagination currentPage={currentPage} onChange={setCurrentPage} />
     </div>
   );
 }

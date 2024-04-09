@@ -1,12 +1,11 @@
 import React from 'react';
 import FeatureList from './components/FeatureList';
-import CommentForm from './components/CommentForm';
 
 function App() {
   return (
-    <div>
+    <div className="container mx-auto p-4">
+      <h1 className="text-center text-3xl font-bold my-4">Sismo Review</h1>
       <FeatureList />
-      <CommentForm featureId={1} /> {/* Cambia esto según la ID de un feature */}
     </div>
   );
 }
