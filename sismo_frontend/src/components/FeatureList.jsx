@@ -6,19 +6,23 @@ import {getFeatures} from '../services/api';
 function FeatureList(){
     const [features, setFeatures] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
 
     useEffect(() => {
-        getFeatures(1, 25)
-          .then(data => {
-            console.log("Datos recibidos:", data);
+    const loadData = async () => {
+        try {
+            const data = await getFeatures(currentPage, 25);
             setFeatures(data.data);
-          })
-          .catch(error => {
-            console.error('Error:', error);
-          });
-      }, []);
+            setTotalPages(Math.ceil(data.pagination.total / 25));
+        } catch (error) {
+            console.error('Error al cargar features:', error);
+        }
+    };
 
-        if (features.length === 0) {
+    loadData();
+    }, [currentPage]);
+
+    if (features.length === 0) {
         return <div>No se encontraron datos</div>;
         }
 
@@ -29,7 +33,13 @@ function FeatureList(){
                 <FeatureCard key={feature.id} feature={feature.attributes} />
             ))}
             </div>
-            <Pagination currentPage={currentPage} onChange={setCurrentPage} />
+            <Pagination 
+                currentPage={currentPage}
+                totalPages={totalPages} // Pasa el total de páginas
+                onChange={(page) => {
+                    setCurrentPage(page);
+                }} // Función para cambiar la página
+            />    
         </div>
       );
 
