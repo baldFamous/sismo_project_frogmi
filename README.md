@@ -1,104 +1,109 @@
-# Objetivos:
+# Sismo project 
 
-- Desarrollar una aplicación en Ruby o framework basado en Ruby que contemple una Task para obtener y persistir datos y una API que exponga dos endpoints que serán consultados desde un cliente externo.
-- Desarrollar una página web simple en HTML5 y Javascript que permita consultar los dos endpoints que expondrá la API mencionada anteriormente. Bonus si utiliza alguno de estos frameworks: EmberJS, React, AngularJS o VueJS.
+Esta es una aplicación web diseñada para proporcionar una interfaz interactiva y accesible para visualizar y comentar sobre eventos sismológicos alrededor del mundo. Utilizando datos en tiempo real del USGS (United States Geological Survey), esta plataforma permite a los usuarios explorar detalles significativos sobre terremotos recientes, incluyendo magnitud, ubicación y tiempo del evento.
 
-## 1. Desarrollo Back end:
 
-Se espera el desarrollo de una aplicación en Ruby o framework basado en Ruby que obtenga y entregue información relacionada con datos sismológicos en el mundo. A grandes rasgos, se espera que contemple una Task para obtener y persistir datos y dos endpoints que serán consultados desde un cliente externo.
+## Tecnologías Utilizadas
 
-### 1.1 Obtención de datos desde feed y persistencia:
+- Ruby on Rails
+- React
+- Tailwind
+- SQLite3
 
-Desarrollar una Task que permita obtener data sismológica desde el sitio USGS (earthquake.usgs.gov). Este feed entrega data en el formato GeoJSON utilizado para estructuras de datos geográficas. Por ejemplo, un Feature (un evento sismológico). GeoJSON usa el estándar JSON.
+## Requisitos Previos
 
-Específicamente se debe obtener desde el feed "Past 30 days" la información de la colección features. Específicamente por cada elemento:
-- `id`
-- `properties.mag`
-- `properties.place`
-- `properties.time`
-- `properties.url`
-- `properties.tsunami`
-- `properties.magType`
-- `properties.title`
-- `geometry.coordinates[0]` (longitude)
-- `geometry.coordinates[1]` (latitude).
+Asegúrate de tener instalado Ruby, Rails, Node.js y npm en tu sistema. Aquí están los enlaces para descargarlos si aún no los tienes:
 
-Es necesario persistir esta data en BD. Consideraciones:
-- Los valores de `title`, `url`, `place`, `magType` y coordinates no pueden ser nulos. En caso contrario no persistir.
-- Validar rangos para magnitude [-1.0, 10.0], latitude [-90.0, 90.0] y longitude: [-180.0, 180.0].
-- No deben duplicarse registros si se lanza la task más de una vez.
+- [Ruby](https://www.ruby-lang.org/en/downloads/)
+- [Rails](https://guides.rubyonrails.org/getting_started.html#installing-rails)
+- [Node.js y npm](https://nodejs.org/en/download/)
 
-### 1.2 Disponibilizar datos a través de una API REST:
+## Configuración Local
 
-Se espera que se desarrollen dos endpoints para exponer la data y modificar data:
+### Configuración de Backend
 
-#### 1.2.1 Endpoint 1: GET lista de features
+1. Clona el repositorio:
 
-Consideraciones:
-- Los resultados deben exponerse siguiendo el siguiente formato:
+   ```bash
+   git clone URL_DEL_REPOSITORIO
+   cd directorio_del_proyecto
+   ```
 
-  ```json
-  {
-    "data": [
-      {
-        "id": Integer,
-        "type": "feature",
-        "attributes": {
-          "external_id": String,
-          "magnitude": Decimal,
-          "place": String,
-          "time": String,
-          "tsunami": Boolean,
-          "mag_type": String,
-          "title": String,
-          "coordinates": {
-            "longitude": Decimal,
-            "latitude": Decimal
-          }
-        },
-        "links": {
-          "external_url": String
-        }
-      }
-    ],
-    "pagination": {
-      "current_page": Integer,
-      "total": Integer,
-      "per_page": Integer
-    }
-  }
-  ```
+2. Navega al directorio del backend:
 
-- La data debe poder ser filtrada por:
-  - `mag_type`. Using `filters[mag_type]`. Puede ser más de uno. Valores posibles: md, ml, ms, mw, me, mi, mb, mlg.
-  - `page`
-  - `per_page`. Validar `per_page` <= 1000.
+   ```bash
+   cd sismo_app
+   ```
+   
 
-#### 1.2.2 Endpoint 2: POST crear un comment asociado a un feature
+3. Instala las gemas necesarias:
 
-Este endpoint debe recibir un payload que considere la siguiente información para crear un comentario relacionado con el feature:
-- Un feature puede tener uno o más comments, pero solo se crea uno a la vez (por request).
-- El payload debe contener un `feature_id`: Integer que hace referencia al `id` interno de un feature y un `body`: Text con el comentario ingresado.
-- Se debe persistir cada comment recibido por este endpoint.
-- Se debe validar que existe contenido en el body del nuevo comentario antes de ser persistido.
+   ```bash
+   bundle install
+   ```
 
-Ejemplos de uso con `curl`:
+4. Crea y migra la base de datos:
 
-```bash
-curl -X GET \
-'127.0.0.1:3000/api/features... \
--H 'Content-Type: application/vnd.api+json' \
--H 'cache-control: no-cache'
+   ```bash
+   rails db:create db:migrate
+   ```
 
-curl -X GET \
-'127.0.0.1:3000/api/features... \
--H 'Content-Type: application/vnd.api+json' \
--H 'cache-control: no-cache'
+5. Carga datos iniciales para la base de datos:
 
-curl --request POST \
---url 127.0.0.1:3000/api/features... \
---header 'content
+   ```bash
+   rake sismo:fetch_data
+   ```
 
--type: application/json' \
---data '{"body": "This is a comment" }'
-```
+6. Inicia el servidor de Rails:
+
+   ```bash
+   rails server
+   ```
+
+### Configuración de Frontend
+
+1. Navega al directorio del frontend:
+
+   ```bash
+   cd sismo_frontend
+   ```
+
+2. Instala las dependencias de Node.js:
+
+   ```bash
+   npm install
+   ```
+
+3. Inicia la aplicación React:
+
+   ```bash
+   npm start
+   ```
+
+   Esto debería abrir automáticamente la aplicación en tu navegador. Si no es así, puedes acceder a ella en `http://localhost:3001`.
+
+## Uso
+
+"Sismo Management" está diseñada para ser intuitiva y fácil de usar, permitiendo a los usuarios interactuar de manera efectiva con los datos sismológicos disponibles. A continuación, se describen las principales funcionalidades y cómo utilizarlas:
+
+1. Visualización de Sismos: Al abrir la     aplicación, los usuarios serán recibidos con una lista de tarjetas que representan los sismos más recientes. Cada tarjeta muestra información clave como la magnitud, ubicación y el tiempo del evento.
+
+2. Agregar Comentarios: En la vista detallada de cada sismo, los usuarios pueden agregar comentarios para discutir o dejar notas relevantes sobre el evento sismológico.
+
+3. Paginación: Los usuarios pueden navegar entre diferentes páginas de resultados para explorar más eventos sismológicos.
+
+## Contribuir
+
+Si deseas contribuir a este proyecto, considera seguir estos pasos:
+
+1. Fork el repositorio.
+2. Crea una nueva rama (`git checkout -b feature-nueva-caracteristica`).
+3. Haz tus cambios y commítalos (`git commit -am 'Añadir alguna característica'`).
+4. Push a la rama (`git push origin feature-nueva-caracteristica`).
+5. Abre una Pull Request.
+
+
+
+## Contacto
+
+Bastian Rodriguez - [LinkedIn](https://www.linkedin.com/in/bastian-rodriguez-r-8b0781211/) - bastian3967a@gmail.com
