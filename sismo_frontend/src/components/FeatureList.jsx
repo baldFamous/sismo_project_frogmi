@@ -30,7 +30,7 @@ function FeatureList(){
         <div>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5">
             {Array.isArray(features) && features.map(feature => (
-                <FeatureCard key={feature.id} feature={feature.attributes} />
+                <FeatureCard key={feature.id} feature={feature} />
             ))}
             </div>
             <Pagination 

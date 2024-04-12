@@ -18,32 +18,34 @@ function Pagination({ currentPage, totalPages, onChange }) {
     }
   
     return (
-      <div className="flex justify-center my-4 space-x-1">
-        {currentPage > 1 && (
-            <button onClick={() => onChange(1)} className="pagination-button">1</button>
-        )}
-  
-        {startPage > 1 && <span>...</span>}
-  
-        {pageNumbers.map(number => (
-            <button
+        <div className="flex justify-center my-4 space-x-1">
+            {currentPage > 1 && (
+                <button onClick={() => onChange(1)} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">
+                1
+                </button>
+            )}
+        
+            {startPage > 1 && <span>...</span>}
+        
+            {pageNumbers.map(number => (
+                <button
                 key={number}
                 onClick={() => onChange(number)}
-                className={`pagination-button ${number === currentPage ? 'active' : ''}`}
-            >
-            {number}
-            </button>
-        ))}
-  
-        {endPage < totalPages && <span>...</span>}
-  
-        {currentPage < totalPages && (
-            <button onClick={() => onChange(totalPages)} className="pagination-button">
+                className={`px-4 py-2 rounded ${number === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-400'}`}
+                >
+                {number}
+                </button>
+            ))}
+        
+            {endPage < totalPages && <span>...</span>}
+        
+            {currentPage < totalPages && (
+                <button onClick={() => onChange(totalPages)} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">
                 {totalPages}
-            </button>
-        )}
-      </div>
-    );
+                </button>
+            )}
+        </div>
+        );
   }
   
   export default Pagination;
