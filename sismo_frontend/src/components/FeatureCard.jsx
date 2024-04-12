@@ -53,7 +53,6 @@ function FeatureCard({ feature }) {
             
             </div>
             <Modal isOpen={isModalOpen} close={() => setModalOpen(false)}>
-                <h2 className="text-xl font-bold">Comentarios</h2>
                 <CommentForm featureId={feature.id} />
             </Modal>
             </div>
