@@ -30,6 +30,15 @@ export async function sendComment(featureId, body) {
 }
 
 export async function getComments(featureId) {
-    return fetchFromAPI(`features/${featureId}/comments`);
+    try {
+        const response = await fetch(`${API_BASE_URL}/features/${featureId}/comments`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch comments');
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching comments:', error);
+        throw error;
+    }
 }
 
