@@ -8,18 +8,18 @@ function CommentForm({ featureId, onClose }) {
     useEffect(() => {
         getComments(featureId)
             .then(data => {
-                setComments(data);  // Asumiendo que la API devuelve un array de comentarios
+                setComments(data);
             })
             .catch(error => console.error('Error loading comments:', error));
     }, [featureId]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!body.trim()) return;  // Validar que el comentario no esté vacío
+        if (!body.trim()) return;
         try {
             const newComment = await sendComment(featureId, body);
-            setComments([...comments, newComment]);  // Agregar el nuevo comentario al estado local
-            setBody('');  // Limpiar el formulario
+            setComments([...comments, newComment]);
+            setBody('');
         } catch (error) {
             console.error('Error posting comment:', error);
         }

@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.API_BASE_URL || 'http://127.0.0.1:3000/api'; // Use the API base URL from environment variables if available, otherwise fallback to default
+const API_BASE_URL = process.env.API_BASE_URL || 'http://127.0.0.1:3000/api';
 
 async function fetchFromAPI(endpoint, options = {}) {
         try {
@@ -14,8 +14,10 @@ async function fetchFromAPI(endpoint, options = {}) {
         }
     }
 
-export async function getFeatures(page = 1, perPage = 25) {
-    return fetchFromAPI(`features?page=${page}&per_page=${perPage}`);
+export async function getFeatures(page = 1, perPage = 25, magTypes = []) {
+    const typeFilter = magTypes.length > 0 ? `filters[mag_type]=${magTypes.join(',')}` : '';
+    return fetchFromAPI(`features?page=${page}&per_page=${perPage}&${typeFilter}`);
+
 }
 
 export async function sendComment(featureId, body) {
